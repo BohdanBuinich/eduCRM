@@ -30,11 +30,25 @@ module.exports = {
       },
       {
         test: /\.(svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=100000',
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1000,
+            },
+          },
+        ],
       },
       {
         test: /\.(jpg|png)?$/,
-        loader: ['file-loader?name=i-[hash].[ext]'],
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'i-[hash].[ext]',
+            },
+          },
+        ],
       },
     ],
   },

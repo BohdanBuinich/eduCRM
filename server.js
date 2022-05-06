@@ -4,12 +4,18 @@ import WebpackDevServer from 'webpack-dev-server';
 
 import config from './webpack.local.config';
 
+const path = require('path');
+
 new WebpackDevServer(webpack(config), {
-  publicPath: config.output.publicPath,
+  static: {
+    directory: path.join(__dirname, 'frontend/bundles/'),
+  },
+  devMiddleware: {
+    publicPath: config.output.publicPath,
+  },
+  hot: 'only',
   port: 3000,
-  hot: true,
-  inline: true,
-  historyApiFallback: true,
+  historyApiFallback: { index: `/index.html` },
   headers: { 'Access-Control-Allow-Origin': '*' },
 }).listen(3000, '0.0.0.0', (err) => {
   if (err) {

@@ -1,8 +1,9 @@
+const path = require('path');
+
 const autoprefixer = require('autoprefixer');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
-const path = require('path');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -13,7 +14,7 @@ baseConfig.mode = 'development';
 baseConfig.entry = [
   'react-hot-loader/patch',
   'whatwg-fetch',
-  '@babel/polyfill',
+  'core-js/stable',
   './frontend/js/index.js',
 ];
 
@@ -33,20 +34,33 @@ baseConfig.module.rules.push(
   {
     test: /\.jsx?$/,
     exclude: [nodeModulesDir],
-    loader: require.resolve('babel-loader'),
+    use: [
+      {
+        loader: require.resolve('babel-loader'),
+        options: {
+          cacheDirectory: true,
+          plugins: ['@babel/plugin-transform-runtime'],
+        },
+      },
+    ],
   },
   {
     test: /\.(woff(2)?|eot|ttf)(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url-loader?limit=100000',
+    use: [
+      {
+        loader: 'url-loader',
+        options: {
+          limit: 100000,
+        },
+      },
+    ],
   }
 );
 
 baseConfig.plugins = [
   new webpack.EvalSourceMapDevToolPlugin({
-    exclude: /node_modules/
+    exclude: /node_modules/,
   }),
-  new webpack.NamedModulesPlugin(),
-  new webpack.NoEmitOnErrorsPlugin(), // don't reload if there is an error
   new BundleTracker({
     filename: './webpack-stats.json',
   }),

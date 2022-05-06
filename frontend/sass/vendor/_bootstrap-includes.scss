@@ -6,12 +6,9 @@
 /* Customizations */
 @import "custom-bootstrap";
 
-/* Reset and dependencies */
-@import "~bootstrap/scss/print";
 
 /* Core CSS */
 @import "~bootstrap/scss/buttons";
-@import "~bootstrap/scss/code";
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/grid";
 @import "~bootstrap/scss/images";
@@ -29,7 +26,6 @@
 // @import "~bootstrap/scss/custom-forms";
 // @import "~bootstrap/scss/dropdown";
 // @import "~bootstrap/scss/input-group";
-@import "~bootstrap/scss/jumbotron";
 // @import "~bootstrap/scss/list-group";
 // @import "~bootstrap/scss/media";
 @import "~bootstrap/scss/nav";

@@ -1,8 +1,9 @@
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const BundleTracker = require('webpack-bundle-tracker');
 const path = require('path');
+
+const autoprefixer = require('autoprefixer');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -11,7 +12,7 @@ const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 baseConfig.mode = 'production';
 baseConfig.devtool = 'source-map';
 
-baseConfig.entry = ['whatwg-fetch', '@babel/polyfill', './frontend/js/index.js'];
+baseConfig.entry = ['whatwg-fetch', 'core-js/stable', './frontend/js/index.js'];
 
 baseConfig.output = {
   path: path.resolve('./frontend/webpack_bundles/'),
@@ -23,16 +24,27 @@ baseConfig.module.rules.push(
   {
     test: /\.jsx?$/,
     exclude: [nodeModulesDir],
-    use: {
-      loader: 'babel-loader',
-      options: {
-        presets: ['@babel/preset-env', '@babel/preset-react'],
+    use: [
+      {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          cacheDirectory: true,
+          plugins: ['@babel/plugin-transform-runtime'],
+        },
       },
-    },
+    ],
   },
   {
     test: /\.(woff(2)?|eot|ttf)(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'file-loader?name=fonts/[name].[ext]',
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: 'fonts/[name].[ext]',
+        },
+      },
+    ],
   }
 );
 
@@ -50,7 +62,7 @@ baseConfig.plugins = [
       NODE_ENV: JSON.stringify('production'),
     },
   }),
-  new MiniCssExtractPlugin({ filename: '[name]-[hash].css', disable: false, allChunks: true }),
+  new MiniCssExtractPlugin({ filename: '[name]-[hash].css' }),
   new BundleTracker({
     filename: './webpack-stats.json',
   }),
